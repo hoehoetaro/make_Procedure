@@ -27,11 +27,8 @@ with open('HTML_data.csv', 'r', encoding='utf-8') as f:
 
         if command == 'title':
             title = content
-            body += f'<h1>{title}</h1>\n'  # Add title to body here
         elif command == 'thumbnail':
             thumbnail_path = content
-            if os.path.exists(thumbnail_path):
-                body += f'<div class="div-img"><img src="{escape(thumbnail_path)}" alt="Image"></div>\n'
         elif command == 'procedure':
             if procedure_content:  # If there was a previous procedure, append it
                 procedures.append((procedure_heading, procedure_content))
@@ -49,6 +46,12 @@ with open('HTML_data.csv', 'r', encoding='utf-8') as f:
             procedure_content += f'<div class="div-video"><video controls onmouseover="this.play()" onmouseout="this.pause();">\n<source src="{escape(content)}" type="video/mp4">\nYour browser does not support the video tag.\n</video></div>\n'
         elif command == 'code':
             procedure_content += f'<div class="div-code code-container"><button onclick="copyToClipboard(\'codeBlock\')">Copy to clipboard</button>\n<pre id="codeBlock"><code>{escape(content)}</code></pre></div>\n'
+
+# Add title and thumbnail to body
+if thumbnail_path and os.path.exists(thumbnail_path):
+    body = f'<div class="div-img"><img src="{escape(thumbnail_path)}" alt="Image"></div>\n' + body
+if title:
+    body = f'<h1>{title}</h1>\n' + body
 
 if procedure_content:  # Append the last procedure
     procedures.append((procedure_heading, procedure_content))
