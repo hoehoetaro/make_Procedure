@@ -5,19 +5,25 @@ import tkinter as tk
 # Move to the directory where this script is located
 os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
+# Get the name of the directory where this script is located
+foldername = os.path.basename(os.getcwd())
+
+# Get the thumbnail file name
+thumbnail_filename = f"{foldername}_thumbnail.png"
+
 data = []
 fields = []
 
 def create_field(default_command=None, default_element=None):
     # Define the dropdown options
-    options = ['procedure', 'description', 'img', 'video','code']  # You can change this list according to your needs
+    options = ['procedure', 'description', 'img', 'video', 'code']
 
     # Create a StringVar object to hold the selected option
     selected_option = tk.StringVar(root)
     if default_command:
-        selected_option.set(default_command)  # Use the default command if provided
+        selected_option.set(default_command)
     else:
-        selected_option.set(options[0])  # Use the first option as default
+        selected_option.set(options[0])
 
     dropdown = tk.OptionMenu(root, selected_option, *options)
     dropdown.grid(row=len(fields)+2, column=1)
@@ -27,7 +33,7 @@ def create_field(default_command=None, default_element=None):
         new_field2.insert(0, default_element)
     new_field2.grid(row=len(fields)+2, column=2)
     
-    fields.append((dropdown, selected_option, new_field2))  # Add the OptionMenu widget itself to the fields list
+    fields.append((dropdown, selected_option, new_field2))
 
 def add_field():
     create_field()
@@ -40,16 +46,16 @@ def remove_field():
 
 def export_to_csv():
     # Add predefined rows at the start
-    data.append(['title', 'foldername'])
-    data.append(['thumbnail', 'filename_thumbnail.png'])
+    data.append(['title', foldername])
+    data.append(['thumbnail', thumbnail_filename])
 
     for field in fields:
-        command = field[1].get()  # Now represents command
-        element = field[2].get()  # Now represents element
-        if command and element:  # Check if both fields are non-empty
+        command = field[1].get()
+        element = field[2].get()
+        if command and element:
             data.append([command, element])
 
-    with open('HTML_data.csv', 'w', newline='', encoding='utf-8') as f:  # Updated file name
+    with open('HTML_data.csv', 'w', newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerow(['command', 'element'])  # Add headers
         writer.writerows(data)
@@ -74,7 +80,7 @@ header2 = tk.Label(root, text="Element")
 header2.grid(row=1, column=2)
 
 # Create initial 2 fields with default commands
-create_field(default_command='procedure', default_element='foldername')
-create_field(default_command='description', default_element='filename_thumbnail.png')
+create_field(default_command='procedure')
+create_field(default_command='description')
 
 root.mainloop()
